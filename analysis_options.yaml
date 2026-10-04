@@ -1,0 +1,8 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    # Generated golden output: references package:dbkit, which dbkit_gen
+    # intentionally does not depend on (it would be a dependency cycle).
+    # It is verified by string comparison + runtime tests in package:dbkit.
+    - test/fixtures/**

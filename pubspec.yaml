@@ -1,0 +1,32 @@
+name: dbkit_gen
+description: >-
+  Annotation-based code generator for dbkit. Annotate model classes with
+  @DbTable/@DbColumn/@DbId and relation annotations, run build_runner,
+  and get typed repositories, query helpers, and relationship loaders.
+version: 0.3.0
+repository: https://github.com/user97116/dbkit_gen
+issue_tracker: https://github.com/user97116/dbkit_gen/issues
+homepage: https://github.com/user97116/dbkit_gen
+
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  analyzer: '>=13.3.0 <15.0.0'
+  build: ^4.0.0
+  source_gen: ^4.0.0
+
+dev_dependencies:
+  build_test: ^3.0.0
+  dbkit:
+    path: ../dbkit
+  lints: ^5.0.0
+  logging: ^1.0.0
+  test: ^1.25.0
+
+topics:
+  - sqlite
+  - database
+  - orm
+  - codegen
+  - generator
