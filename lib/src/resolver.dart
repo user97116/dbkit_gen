@@ -18,8 +18,7 @@ abstract final class _Ann {
   static const hasMany = TypeChecker.fromUrl('$_base#HasMany');
   static const hasOne = TypeChecker.fromUrl('$_base#HasOne');
   static const belongsTo = TypeChecker.fromUrl('$_base#BelongsTo');
-  static const belongsToMany =
-      TypeChecker.fromUrl('$_base#BelongsToMany');
+  static const belongsToMany = TypeChecker.fromUrl('$_base#BelongsToMany');
 }
 
 /// Members that generated relation loaders must not shadow.
@@ -50,8 +49,7 @@ class TableResolver {
 
   /// Every table resolved so far (the root plus all reachable relation
   /// targets), keyed by element. Read after [resolve] to feed the emitter.
-  Map<ClassElement, TableSchema> get resolved =>
-      Map.unmodifiable(_cache);
+  Map<ClassElement, TableSchema> get resolved => Map.unmodifiable(_cache);
 
   /// Resolves [element] (which must carry `@DbTable`) and returns its
   /// schema, throwing [SchemaException] if anything is invalid.
@@ -188,8 +186,9 @@ class TableResolver {
     }
 
     final reader = colAnn == null ? null : ConstantReader(colAnn);
-    final primaryKey =
-        reader == null ? false : (_readBool(reader, 'primaryKey', path) ?? false);
+    final primaryKey = reader == null
+        ? false
+        : (_readBool(reader, 'primaryKey', path) ?? false);
     if (primaryKey && nullable) {
       _err('$path: primaryKey columns must be non-nullable (or use @DbId())');
       return null;
@@ -205,17 +204,15 @@ class TableResolver {
     if (reader != null && !reader.read('defaultValue').isNull) {
       defaultValue = _readScalar(
           reader.read('defaultValue'), '$path.@DbColumn(defaultValue)');
-      if (defaultValue != null &&
-          !_defaultMatches(fieldType, defaultValue)) {
+      if (defaultValue != null && !_defaultMatches(fieldType, defaultValue)) {
         _err('$path: default value does not match field type');
         return null;
       }
     }
 
     ColumnReference? references;
-    final refTable = reader == null
-        ? null
-        : _readString(reader, 'references', path);
+    final refTable =
+        reader == null ? null : _readString(reader, 'references', path);
     if (refTable != null) {
       references = ColumnReference(
         table: refTable,
@@ -239,9 +236,8 @@ class TableResolver {
       type: fieldType,
       required: !nullable,
       primaryKey: primaryKey,
-      unique: reader == null
-          ? false
-          : (_readBool(reader, 'unique', path) ?? false),
+      unique:
+          reader == null ? false : (_readBool(reader, 'unique', path) ?? false),
       defaultValue: defaultValue,
       defaultNow: defaultNow,
       references: references,
@@ -261,8 +257,7 @@ class TableResolver {
     }
     if (type.typeArguments.isNotEmpty) {
       final arg = type.typeArguments.first;
-      final argElement =
-          arg is InterfaceType ? arg.element : null;
+      final argElement = arg is InterfaceType ? arg.element : null;
       if (argElement is ClassElement &&
           _Ann.table.hasAnnotationOf(argElement)) {
         _err('$path: looks like a relation — declare it on the class with '
@@ -381,8 +376,8 @@ class TableResolver {
         model, element, partial, _Ann.hasOne, RelationKind.hasOne));
     relations.addAll(_resolveKind(
         model, element, partial, _Ann.belongsTo, RelationKind.belongsTo));
-    relations.addAll(_resolveKind(model, element, partial,
-        _Ann.belongsToMany, RelationKind.belongsToMany));
+    relations.addAll(_resolveKind(model, element, partial, _Ann.belongsToMany,
+        RelationKind.belongsToMany));
     return relations;
   }
 
@@ -430,8 +425,7 @@ class TableResolver {
       switch (kind) {
         case RelationKind.hasMany:
         case RelationKind.hasOne:
-          final foreignKey =
-              _readString(reader, 'foreignKey', relPath);
+          final foreignKey = _readString(reader, 'foreignKey', relPath);
           if (foreignKey == null) {
             _err('$relPath: foreignKey is required');
             continue;
@@ -477,8 +471,7 @@ class TableResolver {
             limit: limit,
           ));
         case RelationKind.belongsTo:
-          final foreignKey =
-              _readString(reader, 'foreignKey', relPath);
+          final foreignKey = _readString(reader, 'foreignKey', relPath);
           if (foreignKey == null) {
             _err('$relPath: foreignKey is required');
             continue;
@@ -579,8 +572,7 @@ class TableResolver {
 
   // -- whole-table validation ------------------------------------------------------------
 
-  void _validateTable(
-      String model, ClassElement element, TableSchema table) {
+  void _validateTable(String model, ClassElement element, TableSchema table) {
     if (table.columns.isEmpty) {
       _err('$model: table needs at least one column field');
     }

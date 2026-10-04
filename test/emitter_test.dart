@@ -6,8 +6,7 @@ import 'package:test/test.dart';
 /// text primary keys, empty-relation tables).
 void main() {
   String emit(TableSchema table, [Map<String, TableSchema>? targets]) =>
-      emitTablePart(table,
-          targets: targets ?? const {}, source: 'models.dart');
+      emitTablePart(table, targets: targets ?? const {}, source: 'models.dart');
 
   TableSchema filesTable() => const TableSchema(
         name: 'files',
@@ -20,10 +19,16 @@ void main() {
               primaryKey: true,
               autoIncrement: true),
           ColumnSchema(
-              name: 'path', field: 'path', type: ColumnType.text, required: true),
+              name: 'path',
+              field: 'path',
+              type: ColumnType.text,
+              required: true),
           ColumnSchema(name: 'data', field: 'data', type: ColumnType.blob),
           ColumnSchema(
-              name: 'size', field: 'size', type: ColumnType.real, required: true),
+              name: 'size',
+              field: 'size',
+              type: ColumnType.real,
+              required: true),
           ColumnSchema(
               name: 'created', field: 'created', type: ColumnType.datetime),
           ColumnSchema(
@@ -76,15 +81,17 @@ void main() {
       ],
     );
     final code = emit(table);
-    expect(code, contains('Future<void> save(Setting value) => ref.upsert(value.toMap());'));
     expect(
         code,
         contains(
-            "return ref.updateById(value.key, values, idColumn: 'key');"));
+            'Future<void> save(Setting value) => ref.upsert(value.toMap());'));
+    expect(code,
+        contains("return ref.updateById(value.key, values, idColumn: 'key');"));
     expect(code, contains('Future<Setting?> findById(Object id)'));
   });
 
-  test('tables without relations skip loaders and wrappers', () {    const table = TableSchema(
+  test('tables without relations skip loaders and wrappers', () {
+    const table = TableSchema(
       name: 'tags',
       model: 'Tag',
       columns: [

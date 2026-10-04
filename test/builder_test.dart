@@ -19,9 +19,8 @@ import 'package:test/test.dart';
 void main() {
   /// In-memory sources for one test, always including the real annotations.
   Map<String, String> inputs(Map<String, String> sources) => {
-        'dbkit|lib/src/annotations.dart': File(
-                '../dbkit/lib/src/annotations.dart')
-            .readAsStringSync(),
+        'dbkit|lib/src/annotations.dart':
+            File('../dbkit/lib/src/annotations.dart').readAsStringSync(),
         for (final e in sources.entries) 'a|${e.key}': e.value,
       };
 
@@ -115,10 +114,13 @@ class Post {
       }),
       outputs: {
         'a|lib/models.dbkit.g.part': decodedMatches(
-          allOf([contains('class UserTable {'), predicate((String s) {
-            actual = s;
-            return true;
-          })]),
+          allOf([
+            contains('class UserTable {'),
+            predicate((String s) {
+              actual = s;
+              return true;
+            })
+          ]),
         ),
       },
     );

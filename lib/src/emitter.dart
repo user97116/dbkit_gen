@@ -74,7 +74,8 @@ class _Emitter {
 
   void _emitColumns() {
     _line('/// Column names of `${t.name}` for refactor-safe queries:');
-    _line('/// `db.${camelCase(t.name)}.ref.where((w) => w.eq(${t.model}Columns.age, 18))`.');
+    _line(
+        '/// `db.${camelCase(t.name)}.ref.where((w) => w.eq(${t.model}Columns.age, 18))`.');
     _line('abstract final class ${t.model}Columns {');
     for (final c in t.columns) {
       _line("  static const ${c.field} = '${c.name}';");
@@ -137,9 +138,7 @@ class _Emitter {
             ? '$access == null ? null : DateTime.parse($access as String)'
             : 'DateTime.parse($access as String)';
       case ColumnType.blob:
-        return nullable
-            ? '$access as Uint8List?'
-            : '$access as Uint8List';
+        return nullable ? '$access as Uint8List?' : '$access as Uint8List';
     }
   }
 
@@ -234,10 +233,13 @@ class _Emitter {
     _line('  /// Raw handle for custom queries: `table.ref.where(...)...`.');
     _line("  TableRef get ref => _db.table('${t.name}');");
     _line('');
-    _line('  Future<List<$m>> all({String? orderBy, bool desc = false, int? limit, int? offset}) =>');
-    _line('      list(orderBy: orderBy, desc: desc, limit: limit, offset: offset);');
+    _line(
+        '  Future<List<$m>> all({String? orderBy, bool desc = false, int? limit, int? offset}) =>');
+    _line(
+        '      list(orderBy: orderBy, desc: desc, limit: limit, offset: offset);');
     _line('');
-    _line('  Future<List<$m>> list({Condition Function(Where w)? where, String? orderBy, bool desc = false, int? limit, int? offset}) async {');
+    _line(
+        '  Future<List<$m>> list({Condition Function(Where w)? where, String? orderBy, bool desc = false, int? limit, int? offset}) async {');
     _line('    var q = ref.query();');
     _guarded('where != null', 'q = q.where(where);');
     _guarded('orderBy != null', 'q = q.orderBy(orderBy, desc: desc);');
@@ -252,18 +254,22 @@ class _Emitter {
     _line('  }');
     _line('');
     _line('  Future<$m> findByIdOrFail(Object id) async =>');
-    _line("      $m.fromMap(await ref.findByIdOrFail(id, idColumn: '$pkCol'));");
+    _line(
+        "      $m.fromMap(await ref.findByIdOrFail(id, idColumn: '$pkCol'));");
     _line('');
     _line('  Future<$m?> findOne(Condition Function(Where w) where) async {');
     _line('    final m = await ref.findOneWhere(where);');
     _line('    return m == null ? null : $m.fromMap(m);');
     _line('  }');
     _line('');
-    _line('  Future<int> count([Condition Function(Where w)? where]) => ref.count(where);');
+    _line(
+        '  Future<int> count([Condition Function(Where w)? where]) => ref.count(where);');
     _line('');
-    _line('  Future<bool> exists(Condition Function(Where w) where) => ref.existsWhere(where);');
+    _line(
+        '  Future<bool> exists(Condition Function(Where w) where) => ref.existsWhere(where);');
     _line('');
-    _line('  /// Inserts and returns the new row id. Null fields are omitted so');
+    _line(
+        '  /// Inserts and returns the new row id. Null fields are omitted so');
     _line('  /// autoincrement ids and DB defaults apply.');
     _line('  Future<int> insert($m value) => ref.insert($nn(value.toMap()));');
     _line('');
@@ -284,7 +290,8 @@ class _Emitter {
       _line('    }');
       _line('  }');
     } else if (singlePk != null) {
-      _line('  /// Inserts [value], or replaces the row when its id is already set.');
+      _line(
+          '  /// Inserts [value], or replaces the row when its id is already set.');
       _line('  Future<void> save($m value) => ref.upsert(value.toMap());');
     } else {
       _line('  /// Inserts [value] (this table has no single primary key).');
@@ -293,12 +300,14 @@ class _Emitter {
     _line('');
     if (singlePk != null) {
       if (pkAuto) {
-        _line('  /// Updates the row matching [value.$pkField]. Null fields are left untouched —');
+        _line(
+            '  /// Updates the row matching [value.$pkField]. Null fields are left untouched —');
         _line('  /// use [ref] with an explicit map to write NULL.');
         _line('  Future<int> update($m value) {');
         _line('    final id = value.$pkField;');
         _line("    if (id == null) {");
-        _line("      throw ArgumentError.value(value, 'value', '$pkField must be set to update');");
+        _line(
+            "      throw ArgumentError.value(value, 'value', '$pkField must be set to update');");
         _line('    }');
         _line("    final values = $nn(value.toMap())..remove('$pkCol');");
         _line("    return ref.updateById(id, values, idColumn: '$pkCol');");
@@ -308,16 +317,20 @@ class _Emitter {
         _line('  /// Updates the row matching [value.$pkField].');
         _line('  Future<int> update($m value) {');
         _line("    final values = $nn(value.toMap())..remove('$pkCol');");
-        _line("    return ref.updateById(value.$pkField, values, idColumn: '$pkCol');");
+        _line(
+            "    return ref.updateById(value.$pkField, values, idColumn: '$pkCol');");
         _line('  }');
         _line('');
       }
-      _line("  Future<int> updateById(Object id, Map<String, Object?> values) => ref.updateById(id, values, idColumn: '$pkCol');");
+      _line(
+          "  Future<int> updateById(Object id, Map<String, Object?> values) => ref.updateById(id, values, idColumn: '$pkCol');");
       _line('');
-      _line("  Future<int> deleteById(Object id) => ref.deleteById(id, idColumn: '$pkCol');");
+      _line(
+          "  Future<int> deleteById(Object id) => ref.deleteById(id, idColumn: '$pkCol');");
       _line('');
     }
-    _line('  Future<int> deleteWhere(Condition Function(Where w) where) => ref.deleteWhere(where);');
+    _line(
+        '  Future<int> deleteWhere(Condition Function(Where w) where) => ref.deleteWhere(where);');
     for (final r in t.relations) {
       _line('');
       _emitWithMethod(r);
@@ -333,8 +346,10 @@ class _Emitter {
     final modelVar = '${m[0].toLowerCase()}${m.substring(1)}';
     final keyAccess = "r['${r.name}']";
     _line('  /// Eager-loads `${r.name}` for every matching row.');
-    _line('  Future<List<$wrapper>> $method({Condition Function(Where w)? where, void Function(SelectQuery q)? constrain, String? orderBy, bool desc = false, int? limit, int? offset}) async {');
-    if (r.kind == RelationKind.hasMany || r.kind == RelationKind.belongsToMany) {
+    _line(
+        '  Future<List<$wrapper>> $method({Condition Function(Where w)? where, void Function(SelectQuery q)? constrain, String? orderBy, bool desc = false, int? limit, int? offset}) async {');
+    if (r.kind == RelationKind.hasMany ||
+        r.kind == RelationKind.belongsToMany) {
       _line("    var q = ref.withMany('${r.name}', constrain);");
     } else {
       _line("    var q = ref.withOne('${r.name}', constrain);");
@@ -374,11 +389,13 @@ class _Emitter {
     final localField = _ffield(r.localKey);
     switch (r.kind) {
       case RelationKind.hasMany:
-        _line('  /// ${tm}s belonging to this ${t.model.toLowerCase()} ([] when `$localField` is null).');
+        _line(
+            '  /// ${tm}s belonging to this ${t.model.toLowerCase()} ([] when `$localField` is null).');
         _line('  Future<List<$tm>> $prop(Db db) async {');
         _line('    final key = $localField;');
         _guarded('key == null', 'return [];');
-        _line("    final rows = await db.$targetGetter.ref.where((w) => w.eq('${r.foreignKey}', key)).get();");
+        _line(
+            "    final rows = await db.$targetGetter.ref.where((w) => w.eq('${r.foreignKey}', key)).get();");
         _line('    return [for (final m in rows) $tm.fromMap(m)];');
         _line('  }');
       case RelationKind.hasOne:
@@ -386,20 +403,23 @@ class _Emitter {
         _line('  Future<$tm?> $prop(Db db) async {');
         _line('    final key = $localField;');
         _guarded('key == null', 'return null;');
-        _line("    final rows = await db.$targetGetter.ref.where((w) => w.eq('${r.foreignKey}', key)).limit(1).get();");
+        _line(
+            "    final rows = await db.$targetGetter.ref.where((w) => w.eq('${r.foreignKey}', key)).limit(1).get();");
         _line('    return rows.isEmpty ? null : $tm.fromMap(rows.first);');
         _line('  }');
       case RelationKind.belongsTo:
         final fkField = _ffield(r.foreignKey!);
         final fkNullable = _nullable(r.foreignKey!);
-        _line('  /// The $prop this ${t.model.toLowerCase()} belongs to, or null.');
+        _line(
+            '  /// The $prop this ${t.model.toLowerCase()} belongs to, or null.');
         _line('  Future<$tm?> $prop(Db db) async {');
         _line('    final fk = $fkField;');
         if (fkNullable) _guarded('fk == null', 'return null;');
         if (r.targetKey == 'id') {
           _line('    final m = await db.$targetGetter.ref.findById(fk);');
         } else {
-          _line("    final m = await db.$targetGetter.ref.findOneWhere((w) => w.eq('${r.targetKey}', fk));");
+          _line(
+              "    final m = await db.$targetGetter.ref.findOneWhere((w) => w.eq('${r.targetKey}', fk));");
         }
         _line('    return m == null ? null : $tm.fromMap(m);');
         _line('  }');
@@ -413,14 +433,18 @@ class _Emitter {
         final tidField = _tfield(target, r.targetKey);
         final tidNullable =
             _dartType(target.column(r.targetKey)!).endsWith('?');
-        _line('  /// ${tm}s linked to this ${t.model.toLowerCase()} via `${r.pivot}`.');
+        _line(
+            '  /// ${tm}s linked to this ${t.model.toLowerCase()} via `${r.pivot}`.');
         _line('  Future<List<$tm>> $prop(Db db) async {');
         _line('    final key = $localField;');
         _guarded('key == null', 'return [];');
-        _line("    final pivots = await db.$pivotGetter.ref.where((w) => w.eq('${r.pivotFromKey}', key)).get();");
-        _line("    final ids = <Object?>[for (final p in pivots) p['${r.pivotToKey}']];");
+        _line(
+            "    final pivots = await db.$pivotGetter.ref.where((w) => w.eq('${r.pivotFromKey}', key)).get();");
+        _line(
+            "    final ids = <Object?>[for (final p in pivots) p['${r.pivotToKey}']];");
         _guarded('ids.isEmpty', 'return [];');
-        _line("    final rows = await db.$targetGetter.ref.where((w) => w.inList('${r.targetKey}', ids)).get();");
+        _line(
+            "    final rows = await db.$targetGetter.ref.where((w) => w.inList('${r.targetKey}', ids)).get();");
         _line('    return [for (final m in rows) $tm.fromMap(m)];');
         _line('  }');
         _line('');
@@ -431,7 +455,8 @@ class _Emitter {
         _line('    if (pid == null${tidNullable ? ' || tid == null' : ''}) {');
         _line("      throw StateError('Cannot link ${t.model} with null id');");
         _line('    }');
-        _line("    await db.$pivotGetter.ref.insert({'${r.pivotFromKey}': pid, '${r.pivotToKey}': tid});");
+        _line(
+            "    await db.$pivotGetter.ref.insert({'${r.pivotFromKey}': pid, '${r.pivotToKey}': tid});");
         _line('  }');
         _line('');
         _line('  /// Unlinks [other] from this ${t.model.toLowerCase()}.');
@@ -441,7 +466,8 @@ class _Emitter {
         _guarded(
             'pid == null${tidNullable ? ' || tid == null' : ''}', 'return;');
         _line('    await db.$pivotGetter.deleteWhere(');
-        _line("      (w) => w.eq('${r.pivotFromKey}', pid) & w.eq('${r.pivotToKey}', tid),");
+        _line(
+            "      (w) => w.eq('${r.pivotFromKey}', pid) & w.eq('${r.pivotToKey}', tid),");
         _line('    );');
         _line('  }');
         _line('');
@@ -455,15 +481,15 @@ class _Emitter {
   String _tfield(TableSchema target, String dbName) =>
       target.column(dbName)!.field;
 
-  bool _nullable(String dbName) =>
-      _dartType(t.column(dbName)!).endsWith('?');
+  bool _nullable(String dbName) => _dartType(t.column(dbName)!).endsWith('?');
 
   // -- per-table db access + setup -----------------------------------------------------
 
   void _emitDbExtension() {
     _line('/// Typed table accessor. Other generated parts add their own.');
     _line('extension Db${t.model}Table on Db {');
-    _line('  ${t.model}Table get ${camelCase(t.name)} => ${t.model}Table(this);');
+    _line(
+        '  ${t.model}Table get ${camelCase(t.name)} => ${t.model}Table(this);');
     _line('}');
     _line('');
   }
@@ -502,7 +528,8 @@ class _Emitter {
     final compositePk =
         t.columns.where((c) => c.primaryKey && !c.autoIncrement).toList();
     if (compositePk.length > 1) {
-      _line("    t.primary([${compositePk.map((c) => "'${c.name}'").join(', ')}]);");
+      _line(
+          "    t.primary([${compositePk.map((c) => "'${c.name}'").join(', ')}]);");
     }
     for (final c in t.columns) {
       if (c.check != null) {
@@ -590,7 +617,8 @@ class _Emitter {
   void _emitHelpers() {
     // Per-model helper names: one .g.dart combines fragments for every
     // table, so a shared helper would collide.
-    _line('Map<String, Object?> _withoutNulls${t.model}(Map<String, Object?> map) {');
+    _line(
+        'Map<String, Object?> _withoutNulls${t.model}(Map<String, Object?> map) {');
     _line('  map.removeWhere((key, value) => value == null);');
     _line('  return map;');
     _line('}');

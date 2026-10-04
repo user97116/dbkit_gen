@@ -15,6 +15,7 @@ final _tableChecker =
 /// `@DbTable`-annotated class. `source_gen|combining_builder` merges the
 /// parts into the `.g.dart` file named by the source's `part` directive.
 class DbkitTablesGenerator extends Generator {
+  /// Creates the generator (see [dbkitTablesBuilder]).
   const DbkitTablesGenerator();
 
   @override
@@ -44,7 +45,8 @@ class DbkitTablesGenerator extends Generator {
     if (models.isEmpty) return null;
     // Aggregated setup for every table in this library (declaration order
     // should be FK-safe: parents first, pivots last).
-    out.writeln('// Aggregated setup for all ${models.length} tables in this file.');
+    out.writeln(
+        '// Aggregated setup for all ${models.length} tables in this file.');
     out.writeln('Future<void> createAllTables(Db db) async {');
     for (final m in models) {
       out.writeln('  await create${m}Table(db);');
